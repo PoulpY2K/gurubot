@@ -1,7 +1,20 @@
 version: "3"
 services:
-  app:
+  gurubot:
     build: .
     command: node build/main.js
     environment:
       - BOT_TOKEN=${GURUBOT_TOKEN}
+
+  database:
+    image: mariadb:${MARIADB_VERSION:-latest}
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-app}
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    volumes:
+      - db-data:/var/lib/mysql/data:rw
+    ports:
+        - "3306:3306"
+
+volumes:
+  db-data:

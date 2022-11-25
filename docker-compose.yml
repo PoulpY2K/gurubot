@@ -5,12 +5,19 @@ services:
     command: node build/main.js
     environment:
       - BOT_TOKEN=${GURUBOT_TOKEN}
+      - DB_HOST=${DB_HOST}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+    depends_on:
+      - db
+    links:
+      - db
 
-  database:
+  db:
     image: mariadb:${MARIADB_VERSION:-latest}
     environment:
-      MYSQL_DATABASE: ${MYSQL_DATABASE:-app}
-      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MARIADB_DATABASE: ${MYSQL_DATABASE:-gurubase}
+      MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: "yes"
     volumes:
       - db-data:/var/lib/mysql/data:rw
     ports:

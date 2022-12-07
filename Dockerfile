@@ -1,5 +1,5 @@
 ## build runner
-FROM node:lts-alpine as build-runner
+FROM --platform=linux/amd64 node:lts-alpine as build-runner
 
 # Set temp directory
 WORKDIR /tmp/app
@@ -7,24 +7,39 @@ WORKDIR /tmp/app
 # Move package.json
 COPY package.json .
 
+# Move prisma
+COPY prisma ./prisma/
+
+# Move dotenv
+COPY .env.example .env
+
 # Install dependencies
 RUN npm install
 
 # Move source files
 COPY src ./src
-COPY tsconfig.json   .
+COPY tsconfig.json .
+
+# Run prisma client
+RUN npx prisma generate
 
 # Build project
 RUN npm run build
 
 ## production runner
-FROM node:lts-alpine as prod-runner
+FROM --platform=linux/amd64 node:lts-alpine as prod-runner
 
 # Set work directory
 WORKDIR /app
 
 # Copy package.json from build-runner
 COPY --from=build-runner /tmp/app/package.json /app/package.json
+
+# Copy prisma from build-runner
+COPY --from=build-runner /tmp/app/prisma/ /app/prisma/
+
+# Copy dotenv from build-runner
+COPY --from=build-runner /tmp/app/.env /app/.env
 
 # Install dependencies
 RUN npm install --omit=dev

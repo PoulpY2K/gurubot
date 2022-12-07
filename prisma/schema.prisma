@@ -1,0 +1,41 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Bank {
+  id           Int      @id @default(autoincrement())
+  painCoin     Int      @default(0)
+  agonyCoin    Int      @default(0)
+  despairCoin  Int      @default(0)
+  updatedAt    DateTime @default(now()) @db.Timestamp(0)
+  createdAt    DateTime @default(now()) @db.Timestamp(0)
+  owner        Player   @relation(fields: [ownerId], references: [id])
+  ownerId      Int      @unique
+}
+
+model Data {
+  id           Int      @id @default(autoincrement())
+  speed        Int      @default(0)
+  strength     Int      @default(0)
+  stamina      Int      @default(0)
+  intelligence Int      @default(0)
+  creativity   Int      @default(0)
+  createdAt    DateTime @default(now()) @db.Timestamp(0)
+  updatedAt    DateTime @default(now()) @db.Timestamp(0)
+  player       Player   @relation(fields: [playerId], references: [id])
+  playerId     Int      @unique
+}
+
+model Player {
+  id         Int      @id @default(autoincrement())
+  discordId  String   @unique @db.VarChar(255)
+  createdAt  DateTime @default(now()) @db.Timestamp(0)
+  updatedAt  DateTime @default(now()) @db.Timestamp(0)
+  coins      Bank?
+  statistics Data?
+}

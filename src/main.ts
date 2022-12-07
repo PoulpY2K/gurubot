@@ -55,6 +55,7 @@ bot.once("ready", async () => {
                     user = await prisma.player.create({
                         data: {
                             discordId: member.id,
+                            displayName: member.displayName,
                             coins: {
                                 create: {},
                             },
@@ -64,6 +65,15 @@ bot.once("ready", async () => {
                         }
                     })
                     logger.trace(`Created member: ${member.displayName} with id ${user.id}`)
+                } else if (user && user.displayName !== member.displayName) {
+                    await prisma.player.update({
+                        where: {id: user.id},
+                        data: {
+                            displayName: member.displayName,
+                            updatedAt: new Date()
+                        }
+                    })
+                    logger.trace(`Updated displayName for member: ${member.displayName} with id ${user.id}`)
                 }
             }
         }

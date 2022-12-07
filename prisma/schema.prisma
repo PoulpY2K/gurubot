@@ -34,6 +34,7 @@ model Data {
 model Player {
   id         Int      @id @default(autoincrement())
   discordId  String   @unique @db.VarChar(255)
+  displayName String  @db.VarChar(255)
   createdAt  DateTime @default(now()) @db.Timestamp(0)
   updatedAt  DateTime @default(now()) @db.Timestamp(0)
   coins      Bank?

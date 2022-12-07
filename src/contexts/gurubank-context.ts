@@ -3,6 +3,7 @@ import {ApplicationCommandType} from "discord.js";
 import {ContextMenu, Discord} from "discordx";
 import {Logger} from "tslog";
 import {PrismaClient} from "@prisma/client";
+import {GurubankEmbed} from "../gurubank.js";
 
 const logger = new Logger({name: "choices"});
 
@@ -19,13 +20,16 @@ export class GurubankContext {
         });
 
         if (player && player.coins) {
-            interaction.reply({
-                    content: `Vous avez ${player.coins.painCoin} Pain Coins, ${player.coins.agonyCoin} Agony Coins, ${player.coins.despairCoin} Despair Coins`,
-                    ephemeral: true,
-                }
-            ).then(() => {
-                logger.trace(`${interaction.user.username} used Gurubank`);
-            });
+            const embed = GurubankEmbed(interaction, player)
+
+            if (embed) {
+                await interaction.reply({
+                        embeds: [embed],
+                    }
+                ).then(() => {
+                    logger.trace(`${interaction.user.username} used the Gurubank`);
+                });
+            }
         }
     }
 }

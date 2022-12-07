@@ -19,6 +19,7 @@ export const bot = new Client({
         IntentsBitField.Flags.GuildMessages,
         IntentsBitField.Flags.GuildMessageReactions,
         IntentsBitField.Flags.GuildVoiceStates,
+        IntentsBitField.Flags.MessageContent
     ],
 
     // Debug logs are disabled in silent mode
@@ -73,14 +74,6 @@ bot.once("ready", async () => {
 
 bot.on("interactionCreate", (interaction: Interaction) => {
     bot.executeInteraction(interaction);
-});
-
-bot.on("messageCreate", (message: Message) => {
-    bot.executeCommand(message).then(() => {
-        if (!bot.silent) {
-            logger.debug(`Command executed: ${message.content}`);
-        }
-    });
 });
 
 async function run() {

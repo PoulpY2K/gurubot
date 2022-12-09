@@ -5,26 +5,29 @@ services:
     command: node build/main.js
     environment:
       - BOT_TOKEN=${GURUBOT_TOKEN}
-      - DB_HOST=${DB_HOST}
-      - DB_NAME=${DB_NAME}
-      - DB_USER=${DB_USER}
+      - POSTGRES_HOST=${POSTGRES_HOST:-localhost}
+      - POSTGRES_DB=${POSTGRES_DB:-gurubase}
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_SCHEMA=${POSTGRES_SCHEMA:-guru}
     depends_on:
       - db
     links:
       - db
 
   db:
-    image: mariadb:${MARIADB_VERSION:-latest}
+    image: postgres:${POSTGRES_VERSION:-latest}
     environment:
-      MARIADB_DATABASE: ${MYSQL_DATABASE:-gurubase}
-      MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: "yes"
+      POSTGRES_DB: ${POSTGRES_DB:-gurubase}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
-      - db-data:/var/lib/mysql/data:rw
+      - db-data:/var/lib/postgres/data:rw
     ports:
-        - "3306:3306"
+        - "5432:5432"
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      retries: 3
+      test: ["CMD-SHELL", "pg_isready"]
+      retries: 5
       timeout: 5s
       interval: 10s
 

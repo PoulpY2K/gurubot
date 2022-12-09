@@ -1,5 +1,5 @@
 ## build runner
-FROM --platform=linux/amd64 node:lts-alpine as build-runner
+FROM --platform=linux/amd64 node:19-alpine as build-runner
 
 # Set temp directory
 WORKDIR /tmp/app
@@ -20,6 +20,9 @@ RUN npm install
 COPY src ./src
 COPY tsconfig.json .
 
+# Run prisma migration
+RUN npx prisma migrate dev
+
 # Run prisma client
 RUN npx prisma generate
 
@@ -27,7 +30,7 @@ RUN npx prisma generate
 RUN npm run build
 
 ## production runner
-FROM --platform=linux/amd64 node:lts-alpine as prod-runner
+FROM --platform=linux/amd64 node:19-alpine as prod-runner
 
 # Set work directory
 WORKDIR /app

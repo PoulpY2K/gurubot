@@ -1,5 +1,5 @@
 import {dirname, importx} from "@discordx/importer";
-import type {Interaction, Message} from "discord.js";
+import type {Interaction} from "discord.js";
 import {IntentsBitField} from "discord.js";
 import {Client} from "discordx";
 import {PrismaClient} from '@prisma/client'
@@ -19,6 +19,7 @@ export const bot = new Client({
         IntentsBitField.Flags.GuildMessages,
         IntentsBitField.Flags.GuildMessageReactions,
         IntentsBitField.Flags.GuildVoiceStates,
+        IntentsBitField.Flags.MessageContent
     ],
 
     // Debug logs are disabled in silent mode
@@ -54,6 +55,7 @@ bot.once("ready", async () => {
                     user = await prisma.player.create({
                         data: {
                             discordId: member.id,
+                            displayName: member.displayName,
                             coins: {
                                 create: {},
                             },
@@ -63,6 +65,15 @@ bot.once("ready", async () => {
                         }
                     })
                     logger.trace(`Created member: ${member.displayName} with id ${user.id}`)
+                } else if (user && user.displayName !== member.displayName) {
+                    await prisma.player.update({
+                        where: {id: user.id},
+                        data: {
+                            displayName: member.displayName,
+                            updatedAt: new Date()
+                        }
+                    })
+                    logger.trace(`Updated displayName for member: ${member.displayName} with id ${user.id}`)
                 }
             }
         }
@@ -75,27 +86,19 @@ bot.on("interactionCreate", (interaction: Interaction) => {
     bot.executeInteraction(interaction);
 });
 
-bot.on("messageCreate", (message: Message) => {
-    bot.executeCommand(message).then(() => {
-        if (!bot.silent) {
-            logger.debug(`Command executed: ${message.content}`);
-        }
-    });
-});
-
 async function run() {
     // The following syntax should be used in the ECMAScript environment
-    await importx(`${dirname(import.meta.url)}/{events,commands,contexts}/**/*.{ts,js}`);
+    await importx(`${dirname(import.meta.url)}/{events,commands}/**/*.{ts,js}`);
 
     // Let's start the bot
-    if (!process.env.BOT_TOKEN) {
-        const error = Error("Could not find BOT_TOKEN in your environment")
+    if (!process.env.GURUBOT_TOKEN) {
+        const error = Error("Could not find GURUBOT_TOKEN in your environment")
         logger.fatal(error);
         throw error;
     }
 
     // Log in with your bot token
-    await bot.login(process.env.BOT_TOKEN);
+    await bot.login(process.env.GURUBOT_TOKEN);
 }
 
 run().then(() => {

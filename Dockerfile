@@ -20,9 +20,6 @@ RUN npm install
 COPY src ./src
 COPY tsconfig.json .
 
-# Run prisma migration
-RUN npx prisma migrate dev
-
 # Run prisma client
 RUN npx prisma generate
 
@@ -50,5 +47,7 @@ RUN npm install --omit=dev
 # Move build files
 COPY --from=build-runner /tmp/app/build /app/build
 
-# Start bot
-CMD [ "npm", "run", "start" ]
+RUN npx prisma migrate dev
+
+# Migrate database and start bot
+CMD [ "npm", "run", "start"  ]

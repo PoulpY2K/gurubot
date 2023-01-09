@@ -1,5 +1,5 @@
 import {dirname, importx} from "@discordx/importer";
-import type {Interaction, Message} from "discord.js";
+import type {Interaction} from "discord.js";
 import {IntentsBitField} from "discord.js";
 import {Client} from "discordx";
 import {PrismaClient} from '@prisma/client'
@@ -91,14 +91,14 @@ async function run() {
     await importx(`${dirname(import.meta.url)}/{events,commands}/**/*.{ts,js}`);
 
     // Let's start the bot
-    if (!process.env.BOT_TOKEN) {
-        const error = Error("Could not find BOT_TOKEN in your environment")
+    if (!process.env.GURUBOT_TOKEN) {
+        const error = Error("Could not find GURUBOT_TOKEN in your environment")
         logger.fatal(error);
         throw error;
     }
 
     // Log in with your bot token
-    await bot.login(process.env.BOT_TOKEN);
+    await bot.login(process.env.GURUBOT_TOKEN);
 }
 
 run().then(() => {

@@ -58,16 +58,17 @@ export const GurubankEmbed = (interaction: UserContextMenuCommandInteraction | C
         embed = new EmbedBuilder();
         if (target) {
             embed
+                .setThumbnail(target.avatarURL())
                 .setTitle(`Gurubank de ${target.displayName}`)
                 .setDescription(`${member}, voici le contenu de la \`\`Gurubank\`\` de ${target}.`)
         } else {
             embed
+                .setThumbnail("https://cdn.discordapp.com/attachments/873566730495066163/1042752506758955018/Divine_Gate.png")
                 .setTitle(`Gurubank de ${member.displayName}`)
                 .setDescription(`${member}, voici le contenu de votre \`\`Gurubank\`\`.`)
         }
 
         embed
-            .setThumbnail("https://cdn.discordapp.com/attachments/873566730495066163/1042752506758955018/Divine_Gate.png")
             .setColor(0x8636B1)
             .addFields(
                 {

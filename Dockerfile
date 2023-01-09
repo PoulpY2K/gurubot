@@ -11,7 +11,7 @@ COPY package.json .
 COPY prisma ./prisma/
 
 # Move dotenv
-COPY .env.example .env
+COPY .env .
 
 # Install dependencies
 RUN npm install
@@ -47,7 +47,5 @@ RUN npm install --omit=dev
 # Move build files
 COPY --from=build-runner /tmp/app/build /app/build
 
-RUN npx prisma migrate dev
-
 # Migrate database and start bot
-CMD [ "npm", "run", "start"  ]
+CMD ["npm", "run", "start", "&&", "npx", "prisma", "migrate", "dev"]

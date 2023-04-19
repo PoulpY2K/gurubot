@@ -11,7 +11,7 @@ COPY package.json .
 COPY prisma ./prisma/
 
 # Move dotenv
-COPY .env .
+COPY .env.example ./.env
 
 # Install dependencies
 RUN npm install

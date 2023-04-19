@@ -21,11 +21,7 @@ services:
     command: node build/main.js
     environment:
       - GURUBOT_TOKEN=${GURUBOT_TOKEN}
-      - POSTGRES_HOST=${POSTGRES_HOST:-db}
-      - POSTGRES_USER=${POSTGRES_USER:-postgres}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-gurubot}
-      - POSTGRES_DB=${POSTGRES_DB:-gurubase}
-      - POSTGRES_SCHEMA=${POSTGRES_SCHEMA:-guru}
+      - DB_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-gurubot}@${POSTGRES_HOST:-db}:5432/${POSTGRES_DB:-gurubase}?schema=${POSTGRES_SCHEMA:-guru}
     depends_on:
       - db
     links:

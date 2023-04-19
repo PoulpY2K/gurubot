@@ -10,9 +10,6 @@ COPY package.json .
 # Move prisma
 COPY prisma ./prisma/
 
-# Move dotenv
-COPY .env.example ./.env
-
 # Install dependencies
 RUN npm install
 
@@ -37,9 +34,6 @@ COPY --from=build-runner /tmp/app/package.json /app/package.json
 
 # Copy prisma from build-runner
 COPY --from=build-runner /tmp/app/prisma/ /app/prisma/
-
-# Copy dotenv from build-runner
-COPY --from=build-runner /tmp/app/.env /app/.env
 
 # Install dependencies
 RUN npm install --omit=dev

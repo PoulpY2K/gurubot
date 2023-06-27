@@ -76,7 +76,7 @@ export const createGurubankModal = (customId: string, target: Player & { coins: 
 }
 
 @Discord()
-@SlashGroup({description: "La Gurubank contient tous les coins durement acquis par les joueurs !", name: "gurubank"})
+@SlashGroup({description: "Le Gurubot vous permet de consulter diverses informations liées à Guruland !", name: "gurubot"})
 export class GurubankModal {
     player: Player & { coins: Bank | null } | null = null;
 
@@ -93,7 +93,7 @@ export class GurubankModal {
     }
 
     @Slash({description: "Modifier le contenu de la Gurubank d'un joueur"})
-    @SlashGroup("gurubank")
+    @SlashGroup("gurubot")
     async edit(
         @SlashOption({
             description: "Pseudo du joueur",

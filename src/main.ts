@@ -37,6 +37,9 @@ bot.once("ready", async () => {
     // Make sure all guilds are cached
     await bot.guilds.fetch();
 
+    // Make sure all guild members are cached
+    await bot.guilds.cache.forEach(guild => guild.members.fetch())
+
     // Synchronize applications commands with Discord
     await bot.initApplicationCommands();
 
@@ -49,41 +52,46 @@ bot.once("ready", async () => {
     // );
 
     // Make sure all guruland members are cached
-    const gurulandMembers = bot.guilds.cache.map(async guild => await guild.members.fetch());
+    const gurulandMembers: GuildMember[] = [];
 
-    if (gurulandMembers) {
-        for await (const [, memberCollection] of gurulandMembers) {
-            const member = memberCollection[1]
-            if (!member.user.bot) {
-                let user = await prisma.player.findUnique({
-                    where: {discordId: member.id}
-                });
+    bot.guilds.cache.forEach(guild => {
+        guild.members.cache.forEach(member => {
+            if (member.user.bot) return
+            gurulandMembers.push(member)
+        })
+    })
 
-                if (!user) {
-                    user = await prisma.player.create({
-                        data: {
-                            discordId: member.id,
-                            displayName: member.displayName,
-                            coins: {
-                                create: {},
-                            },
-                            statistics: {
-                                create: {},
-                            },
-                        }
-                    })
-                    logger.debug(`Created member: ${member.displayName} with id ${user.id}`)
-                } else if (user && user.displayName !== member.displayName) {
-                    await prisma.player.update({
-                        where: {id: user.id},
-                        data: {
-                            displayName: member.displayName,
-                            updatedAt: new Date()
-                        }
-                    })
-                    logger.debug(`Updated displayName for member: ${member.displayName} with id ${user.id}`)
-                }
+    if (gurulandMembers.length > 0) {
+        for await (const member of gurulandMembers) {
+            let user = await prisma.player.findUnique({
+                where: {discordId: member.id}
+            });
+
+            if (!user) {
+                user = await prisma.player.create({
+                    data: {
+                        discordId: member.id,
+                        displayName: member.displayName,
+                        coins: {
+                            create: {},
+                        },
+                        statistics: {
+                            create: {},
+                        },
+                    }
+                })
+                logger.debug(`Created member: ${member.displayName} with id ${user.id}`)
+            } else if (user && user.displayName !== member.displayName) {
+                await prisma.player.update({
+                    where: {id: user.id},
+                    data: {
+                        displayName: member.displayName,
+                        updatedAt: new Date()
+                    }
+                })
+                logger.debug(`Updated displayName for member: ${member.displayName} with id ${user.id}`)
             }
+
         }
     }
 

@@ -10,6 +10,7 @@
     "build:changelog": "npx @discordx/changelog",
     "dev": "ts-node-esm src/main.ts",
     "start": "node build/main.js",
+    "start:migrate": "prisma migrate deploy && npm run start",
     "watch": "nodemon --exec ts-node-esm src/main.ts"
   },
   "dependencies": {
@@ -18,13 +19,13 @@
     "@prisma/client": "^4.8.1",
     "discord.js": "^14.6.0",
     "discordx": "^11.4.0",
-    "tslog": "^4.4.4"
+    "tslog": "^4.4.4",
+    "prisma": "^4.8.1"
   },
   "devDependencies": {
     "@types/node": "^18.11.7",
     "nodemon": "^2.0.20",
     "prettier": "^2.7.1",
-    "prisma": "^4.8.1",
     "ts-node": "^10.9.1",
     "typescript": "4.8.4"
   },

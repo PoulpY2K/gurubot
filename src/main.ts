@@ -1,11 +1,18 @@
 import {dirname, importx} from "@discordx/importer";
-import type {Interaction} from "discord.js";
-import {IntentsBitField} from "discord.js";
+import type {GuildMember, Interaction} from "discord.js";
+import {
+    ApplicationCommandType,
+    ChatInputCommandInteraction,
+    ContextMenuCommandInteraction,
+    IntentsBitField
+} from "discord.js";
 import {Client} from "discordx";
 import {PrismaClient} from '@prisma/client'
 import {Logger} from "tslog";
 
 const logger = new Logger({name: "main"});
+let startTimestamp: Date;
+let endTimestamp: Date;
 export const prisma = new PrismaClient()
 
 export const bot = new Client({
@@ -42,10 +49,11 @@ bot.once("ready", async () => {
     // );
 
     // Make sure all guruland members are cached
-    const gurulandMembers = await bot.guilds.cache.get("861596038066733156")?.members.fetch();
+    const gurulandMembers = bot.guilds.cache.map(async guild => await guild.members.fetch());
 
     if (gurulandMembers) {
-        for (const [, member] of gurulandMembers) {
+        for await (const [, memberCollection] of gurulandMembers) {
+            const member = memberCollection[1]
             if (!member.user.bot) {
                 let user = await prisma.player.findUnique({
                     where: {discordId: member.id}
@@ -64,7 +72,7 @@ bot.once("ready", async () => {
                             },
                         }
                     })
-                    logger.trace(`Created member: ${member.displayName} with id ${user.id}`)
+                    logger.debug(`Created member: ${member.displayName} with id ${user.id}`)
                 } else if (user && user.displayName !== member.displayName) {
                     await prisma.player.update({
                         where: {id: user.id},
@@ -73,17 +81,20 @@ bot.once("ready", async () => {
                             updatedAt: new Date()
                         }
                     })
-                    logger.trace(`Updated displayName for member: ${member.displayName} with id ${user.id}`)
+                    logger.debug(`Updated displayName for member: ${member.displayName} with id ${user.id}`)
                 }
             }
         }
     }
 
-    logger.trace("Bot started");
+    endTimestamp = new Date();
+    logger.info(`Bot started in ${(endTimestamp.getTime() - startTimestamp.getTime())}ms`);
 });
 
 bot.on("interactionCreate", (interaction: Interaction) => {
     bot.executeInteraction(interaction);
+    if (interaction instanceof ChatInputCommandInteraction || interaction instanceof ContextMenuCommandInteraction)
+        logger.info(`[${interaction.commandName} - ${ApplicationCommandType[interaction.commandType]}] Launched by: ${(interaction.member! as GuildMember).displayName} (${interaction.user.username})`)
 });
 
 async function run() {
@@ -102,5 +113,6 @@ async function run() {
 }
 
 run().then(() => {
-    logger.trace("Bot is starting");
+    logger.info("Starting...");
+    startTimestamp = new Date();
 });

@@ -41,5 +41,5 @@ RUN npm install --omit=dev
 # Move build files
 COPY --from=build-runner /tmp/app/build /app/build
 
-# Migrate database and start bot
-CMD ["npm", "run", "start", "&&", "npx", "prisma", "migrate", "dev"]
+# Start bot and migrate database
+CMD ["npx", "prisma", "migrate", "deploy", "&&", "npm", "run", "start"]

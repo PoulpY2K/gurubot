@@ -12,7 +12,7 @@ import {
 import type {EmbedBuilder as EmbedBuilderType} from "discord.js";
 import {Logger} from "tslog";
 
-const logger = new Logger({name: "gurubank"});
+const logger = new Logger({name: "gurubank.show"});
 export const prisma = new PrismaClient()
 
 export const findUniquePlayerWithBank = async (discordId: string): Promise<Player & { coins: Bank | null } | null> => {
@@ -58,12 +58,12 @@ export const GurubankEmbed = (interaction: UserContextMenuCommandInteraction | C
         embed = new EmbedBuilder();
         if (target) {
             embed
-                .setThumbnail(target.avatarURL())
+                .setThumbnail(target.displayAvatarURL())
                 .setTitle(`Gurubank de ${target.displayName}`)
                 .setDescription(`${member}, voici le contenu de la \`\`Gurubank\`\` de ${target}.`)
         } else {
             embed
-                .setThumbnail("https://cdn.discordapp.com/attachments/873566730495066163/1042752506758955018/Divine_Gate.png")
+                .setThumbnail(member.displayAvatarURL())
                 .setTitle(`Gurubank de ${member.displayName}`)
                 .setDescription(`${member}, voici le contenu de votre \`\`Gurubank\`\`.`)
         }
@@ -98,8 +98,8 @@ export const GurubankEmbed = (interaction: UserContextMenuCommandInteraction | C
 }
 
 @Discord()
-@SlashGroup({description: "Représente le nombre de pièces qu'ont obtenu les joueurs", name: "gurubank"})
-export class Gurubank {
+@SlashGroup({description: "Le Gurubot vous permet de consulter diverses informations liées à Guruland !", name: "gurubot"})
+export class GurubankShow {
     @ContextMenu({name: "Voir la Gurubank", type: ApplicationCommandType.User})
     async handle(interaction: UserContextMenuCommandInteraction): Promise<void> {
         getPlayerFromInteractionAndTarget(interaction, interaction.targetUser).then(async (player) => {
@@ -115,7 +115,7 @@ export class Gurubank {
     }
 
     @Slash({description: "Voir la Gurubank d'un joueur"})
-    @SlashGroup("gurubank")
+    @SlashGroup("gurubot")
     async show(
         @SlashOption({
             description: "Pseudo du joueur",

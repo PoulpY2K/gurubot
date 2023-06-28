@@ -2,26 +2,29 @@ version: "3"
 services:
   db:
     image: postgres:${POSTGRES_VERSION:-latest}
-    env_file:
-      - .env
+    restart: always
     volumes:
-      - db-data:/var/lib/postgres/data:rw
+      - gurubot-db:/var/lib/postgres/data:rw
+    expose:
+      - "${POSTGRES_PORT:-5432}"
     ports:
-        - "5432:5432"
+      - "${POSTGRES_PORT:-5432}:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       retries: 5
       timeout: 5s
       interval: 10s
-  gurubot:
-    build: .
-    command: node build/main.js
     env_file:
       - .env
+  gurubot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
     depends_on:
       - db
-    links:
-      - db
+    env_file:
+      - .env
 
 volumes:
-  db-data:
+  gurubot-db:

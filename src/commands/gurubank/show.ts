@@ -98,7 +98,6 @@ export const GurubankEmbed = (interaction: UserContextMenuCommandInteraction | C
 }
 
 @Discord()
-@SlashGroup({description: "Le Gurubot vous permet de consulter diverses informations liées à Guruland !", name: "gurubot"})
 export class GurubankShow {
     @ContextMenu({name: "Voir la Gurubank", type: ApplicationCommandType.User})
     async handle(interaction: UserContextMenuCommandInteraction): Promise<void> {
@@ -115,7 +114,6 @@ export class GurubankShow {
     }
 
     @Slash({description: "Voir la Gurubank d'un joueur"})
-    @SlashGroup("gurubot")
     async show(
         @SlashOption({
             description: "Pseudo du joueur",

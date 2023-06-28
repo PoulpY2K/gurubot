@@ -1,44 +1,54 @@
+<!-- HEADER -->
+
 <div>
   <p align="center">
-    <a href="https://discordx.js.org" target="_blank" rel="nofollow">
-      <img src="https://discordx.js.org/discordx.svg" width="546" />
-    </a>
+      <img src=".github/images/guru.png" width="200" />
   </p>
   <p align="center">
-    <a href="https://discordx.js.org/discord"
+    <a href="https://github.com/PoulpY2K/wakfu-forum-scraper/graphs/contributors"
       ><img
-        src="https://img.shields.io/discord/874802018361950248?color=5865F2&logo=discord&logoColor=white"
-        alt="Discord server"
+        src="https://img.shields.io/github/contributors/PoulpY2K/gurubot"
+        alt="Contributors"
     /></a>
-    <a href="https://www.npmjs.com/package/discordx"
+    <a href="https://github.com/PoulpY2K/wakfu-forum-scraper/network/members"
       ><img
-        src="https://img.shields.io/npm/v/discordx.svg?maxAge=3600"
-        alt="NPM version"
+        src="https://img.shields.io/github/forks/PoulpY2K/gurubot"
+        alt="Forks"
     /></a>
-    <a href="https://www.npmjs.com/package/discordx"
+    <a href="https://github.com/PoulpY2K/wakfu-forum-scraper/stargazers"
       ><img
-        src="https://img.shields.io/npm/dt/discordx.svg?maxAge=3600"
-        alt="NPM downloads"
+        src="https://img.shields.io/github/stars/PoulpY2K/gurubot"
+        alt="Stars"
     /></a>
-    <a href="https://github.com/oceanroleplay/discord.ts/actions"
+    <a href="https://github.com/PoulpY2K/wakfu-forum-scraper/issues"
       ><img
-        src="https://github.com/oceanroleplay/discord.ts/workflows/Build/badge.svg"
-        alt="Build status"
+        src="https://img.shields.io/github/issues/PoulpY2K/gurubot"
+        alt="Issues"
     /></a>
-    <a href="https://www.paypal.me/vijayxmeena"
+    <a href="https://github.com/PoulpY2K/wakfu-forum-scraper/blob/main/LICENSE.txt"
       ><img
-        src="https://img.shields.io/badge/donate-paypal-F96854.svg"
-        alt="paypal"
+        src="https://img.shields.io/github/license/PoulpY2K/gurubot"
+        alt="License"
+    /></a>
+   <a href="https://www.linkedin.com/in/j%C3%A9r%C3%A9my-laurent-0986981b8/"
+      ><img
+        src="https://img.shields.io/badge/-LinkedIn-black?logo=linkedin&colorB=555"
+        alt="LinkedIn"
     /></a>
   </p>
   <p align="center">
-    <b> Create a discord bot with TypeScript and Decorators! </b>
+    <b> Guru's greed, turned into a bot ! </b>
+  </p>
+   <p align="center">
+    <a href="https://github.com/PoulpY2K/wakfu-forum-scraper/issues">Report bugs</a>
+    ·
+    <a href="https://github.com/PoulpY2K/wakfu-forum-scraper/issues">New feature</a>
   </p>
 </div>
 
 # 📖 Introduction
 
-A starter template equipped with several interaction commands and one event.
+A simple Discord bot made with [Discordx](https://github.com/discordx-ts/discordx) which registers various information in a database.
 
 # 🏗 Development
 
@@ -47,7 +57,7 @@ npm install
 npm run dev
 ```
 
-If you want to use [Nodemon](https://nodemon.io/) to auto-reload while in development:
+If you want to use [nodemon](https://nodemon.io/) to auto-reload while in development:
 
 ```
 npm run watch
@@ -56,7 +66,7 @@ npm run watch
 # 💻 Production
 
 ```
-npm install --production
+npm install --omit=dev
 npm run build
 npm run start
 ```
@@ -83,17 +93,12 @@ docker-compose logs
 
 For the full command list please view the [Docker Documentation](https://docs.docker.com/engine/reference/commandline/cli/).
 
-# 📜 Documentation
+# 🔨 Made with [Discordx](https://github.com/discordx-ts/discordx/)
 
-- [discordx.js.org](https://discordx.js.org)
-- [Tutorials (dev.to)](https://dev.to/oceanroleplay/series/14317)
+# ☎️ Need more info?
 
-# ☎️ Need help?
-
-- [Check frequently asked questions](https://discordx.js.org/docs/faq)
-- [Check examples](https://github.com/oceanroleplay/discord.ts/tree/main/packages/discordx/examples)
-- Ask in the community [Discord server](https://discordx.js.org/discord)
+#### Jérémy Laurent - [@PoulpY2K](https://twitter.com/PoulpY2K) - [My Discord](https://discordapp.com/users/153168748461686785) - contact@jeremy-laurent.com
 
 # 💖 Thank you
 
-You can support [discordx](https://www.npmjs.com/package/discordx) by giving it a [GitHub](https://github.com/oceanroleplay/discord.ts) star.
+You can support me by giving a [GitHub](https://github.com/PoulpY2K/gurubot) star.

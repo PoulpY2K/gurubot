@@ -9,12 +9,14 @@ import {
 import {Client} from "discordx";
 import {PrismaClient} from '@prisma/client'
 import {Logger} from "tslog";
+import PlayerHelper from "./database/player-helper";
+import {Player} from "@prisma/client/index";
 
 const logger = new Logger({name: "main"});
-let startTimestamp: Date;
-let endTimestamp: Date;
 export const prisma = new PrismaClient()
 
+let startTimestamp: Date;
+let endTimestamp: Date;
 export const bot = new Client({
     // To use only guild command
     botGuilds: [(client) => client.guilds.cache.map((guild) => guild.id)],
@@ -51,47 +53,26 @@ bot.once("ready", async () => {
     //    ...bot.guilds.cache.map((g) => g.id)
     // );
 
-    // Make sure all guruland members are cached
-    const gurulandMembers: GuildMember[] = [];
+    // Declare array for guild members
+    const members: GuildMember[] = [];
 
+    // Make sure all members are cached
     bot.guilds.cache.forEach(guild => {
         guild.members.cache.forEach(member => {
             if (member.user.bot) return
-            gurulandMembers.push(member)
+            members.push(member)
         })
     })
 
-    if (gurulandMembers.length > 0) {
-        for await (const member of gurulandMembers) {
-            let user = await prisma.player.findUnique({
-                where: {discordId: member.id}
-            });
+    if (members.length > 0) {
+        for await (const member of members) {
+            let player: Player | null = await PlayerHelper.findUniqueByMemberId(member);
 
-            if (!user) {
-                user = await prisma.player.create({
-                    data: {
-                        discordId: member.id,
-                        displayName: member.displayName,
-                        coins: {
-                            create: {},
-                        },
-                        statistics: {
-                            create: {},
-                        },
-                    }
-                })
-                logger.debug(`Created member: ${member.displayName} with id ${user.id}`)
-            } else if (user && user.displayName !== member.displayName) {
-                await prisma.player.update({
-                    where: {id: user.id},
-                    data: {
-                        displayName: member.displayName,
-                        updatedAt: new Date()
-                    }
-                })
-                logger.debug(`Updated displayName for member: ${member.displayName} with id ${user.id}`)
+            if (player && player.displayName !== member.displayName) {
+                await PlayerHelper.updatePlayerDisplayName(player, member)
+            } else {
+                player = await PlayerHelper.createPlayer(member);
             }
-
         }
     }
 
@@ -101,8 +82,9 @@ bot.once("ready", async () => {
 
 bot.on("interactionCreate", (interaction: Interaction) => {
     bot.executeInteraction(interaction);
-    if (interaction instanceof ChatInputCommandInteraction || interaction instanceof ContextMenuCommandInteraction)
+    if (interaction instanceof ChatInputCommandInteraction || interaction instanceof ContextMenuCommandInteraction) {
         logger.info(`[${interaction.commandName} - ${ApplicationCommandType[interaction.commandType]}] Launched by: ${(interaction.member! as GuildMember).displayName} (${interaction.user.username})`)
+    }
 });
 
 async function run() {

@@ -7,20 +7,14 @@ import {
     TextInputStyle, User, UserContextMenuCommandInteraction, GuildMember,
 } from "discord.js";
 
-import {ContextMenu, Discord, ModalComponent, Slash, SlashGroup, SlashOption} from "discordx";
+import {ContextMenu, Discord, ModalComponent, Slash, SlashOption} from "discordx";
 
 import {Logger} from "tslog";
+import PlayerHelper from "../../database/player-helper";
 
 export const prisma = new PrismaClient()
 
-const logger = new Logger({name: "gurubank.modal"});
-
-export const findUniquePlayerWithBank = async (discordId: string): Promise<Player & { coins: Bank | null } | null> => {
-    return prisma.player.findUnique({
-        where: {discordId: discordId},
-        include: {coins: true},
-    });
-}
+const logger = new Logger({name: "gurubank.edit"});
 
 export const createCoinTextInput = (customId: string, label: string, placeholder: string, value: number): TextInputBuilder => {
     return new TextInputBuilder()
@@ -81,14 +75,12 @@ export class GurubankModal {
 
     @ContextMenu({name: "Modifier la Gurubank", type: ApplicationCommandType.User})
     async handle(interaction: UserContextMenuCommandInteraction): Promise<void> {
-        this.player = await findUniquePlayerWithBank(interaction.targetUser.id);
+        this.player = await PlayerHelper.findUniquePlayerWithBank(interaction.targetUser.id);
 
         const modal = createGurubankModal("GurubankModal", this.player)
 
         // Present the modal to the user
-        await interaction.showModal(modal).then(() =>
-            logger.trace("Gurubank modal has been opened by " + this.player?.displayName)
-        );
+        await interaction.showModal(modal);
     }
 
     @Slash({description: "Modifier le contenu de la Gurubank d'un joueur"})
@@ -102,14 +94,12 @@ export class GurubankModal {
             user: User,
         interaction: CommandInteraction): Promise<void> {
         if (user) {
-            this.player = await findUniquePlayerWithBank(user.id);
+            this.player = await PlayerHelper.findUniquePlayerWithBank(user.id);
 
             const modal = createGurubankModal("GurubankModal", this.player)
 
             // Present the modal to the user
-            await interaction.showModal(modal).then(() =>
-                logger.trace("Gurubank modal has been opened by " + this.player?.displayName)
-            );
+            await interaction.showModal(modal);
         }
     }
 

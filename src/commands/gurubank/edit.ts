@@ -10,7 +10,7 @@ import {
 import {ContextMenu, Discord, ModalComponent, Slash, SlashOption} from "discordx";
 
 import {Logger} from "tslog";
-import PlayerHelper from "../../database/player-helper";
+import PlayerHelper from "../../database/player-helper.js";
 
 export const prisma = new PrismaClient()
 

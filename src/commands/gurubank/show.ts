@@ -11,7 +11,7 @@ import {
     User,
     UserContextMenuCommandInteraction
 } from "discord.js";
-import PlayerHelper from "../../database/player-helper";
+import PlayerHelper from "../../database/player-helper.js";
 
 export const prisma = new PrismaClient()
 
@@ -96,7 +96,7 @@ export class GurubankShow {
                 const target = interaction.guild.members.cache.get(user.id);
 
                 const embed = createGurubankEmbed(interaction, player, target)
-                await interaction.reply({embeds: [embed], ephemeral: true})
+                await interaction.reply({embeds: [embed], ephemeral: false})
             }
         });
     }

@@ -1,4 +1,4 @@
-import {prisma} from "../main";
+import {prisma} from "../main.js";
 import {GuildMember} from "discord.js";
 import {Player} from "@prisma/client/index";
 import {Logger} from "tslog";

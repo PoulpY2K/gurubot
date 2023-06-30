@@ -9,7 +9,7 @@ import {
 import {Client} from "discordx";
 import {PrismaClient} from '@prisma/client'
 import {Logger} from "tslog";
-import PlayerHelper from "./database/player-helper";
+import PlayerHelper from "./database/player-helper.js";
 import {Player} from "@prisma/client/index";
 
 const logger = new Logger({name: "main"});

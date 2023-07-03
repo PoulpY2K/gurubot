@@ -70,7 +70,7 @@ bot.once("ready", async () => {
 
             if (player && player.displayName !== member.displayName) {
                 await PlayerHelper.updatePlayerDisplayName(player, member)
-            } else {
+            } else if (!player) {
                 player = await PlayerHelper.createPlayer(member);
             }
         }

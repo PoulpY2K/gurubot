@@ -1,19 +1,24 @@
-# [v1.0.1](https://github.com/PoulpY2K/gurubot/releases/tag/v1.0.1) (2023-06-28)
+## Changed
+
+- code refactor ([396248](https://github.com/PoulpY2K/gurubot/commit/3962480f76a975c0884a2892c9058551183d5224))
 
 ## Fixed
 
-- Fix Gurubot permssions and docker build configuration ([#6](https://github.com/PoulpY2K/gurubot/issues/6)) ([fde369](https://github.com/PoulpY2K/gurubot/commit/fde3690f6f23f70fcac701871fc13b9dc0f8e875))
+- add error management ([aaeaa7](https://github.com/PoulpY2K/gurubot/commit/aaeaa732a5f0a1063c85d2cf55fc8c0ffd1c7141))
+- fix bug in database check ([2ecac4](https://github.com/PoulpY2K/gurubot/commit/2ecac4b85974cd652c3cf12bb4fde2fc9071bb6f))
+- Fix wrong imports ([1bc6c6](https://github.com/PoulpY2K/gurubot/commit/1bc6c6452e520398fd1e48e5ea5d8f652cf75cce))
+
+# [v1.0.1f](https://github.com/PoulpY2K/gurubot/releases/tag/v1.0.1f) (2023-06-28)
 
 ## Build
 
-- Update dependencies ([9a1308](https://github.com/PoulpY2K/gurubot/commit/9a1308ac9f782f9d67e1f14c2f0c1043ddabb192))
 - Create docker-image.yml ([#5](https://github.com/PoulpY2K/gurubot/issues/5)) ([b2776d](https://github.com/PoulpY2K/gurubot/commit/b2776d6fa78f84060200610f88cb6021c5b21df6))
 
 ## Untagged
 
-- style(readme): Better readme ([2618e9](https://github.com/PoulpY2K/gurubot/commit/2618e9cb1a4ceec5be316aa0a5d515408e894072))
+- Release v1.0.1 - Fix Gurubot permissions and docker build configuration ([#7](https://github.com/PoulpY2K/gurubot/issues/7)) ([61b8ba](https://github.com/PoulpY2K/gurubot/commit/61b8ba9f07339c2058971b83136df335c10c3492))
 
-# [v1.0](https://github.com/PoulpY2K/gurubot/releases/tag/v1.0) (2023-06-27)
+# [v1.0.0](https://github.com/PoulpY2K/gurubot/releases/tag/v1.0.0) (2023-06-27)
 
 ## Features
 

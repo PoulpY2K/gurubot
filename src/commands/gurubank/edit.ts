@@ -4,19 +4,20 @@ import {
     CommandInteraction, ModalSubmitInteraction, ActionRowBuilder, ApplicationCommandType, ApplicationCommandOptionType,
     ModalBuilder,
     TextInputBuilder,
-    TextInputStyle, User, UserContextMenuCommandInteraction, GuildMember,
+    TextInputStyle, User, UserContextMenuCommandInteraction, ContextMenuCommandInteraction,
 } from "discord.js";
 
 import {ContextMenu, Discord, ModalComponent, Slash, SlashOption} from "discordx";
 
 import {Logger} from "tslog";
 import PlayerHelper from "../../database/player-helper.js";
+import EmbedHelper from "./embed-helper.js";
 
 export const prisma = new PrismaClient()
 
 const logger = new Logger({name: "gurubank.edit"});
 
-export const createCoinTextInput = (customId: string, label: string, placeholder: string, value: number): TextInputBuilder => {
+const createCoinTextInput = (customId: string, label: string, placeholder: string, value: number): TextInputBuilder => {
     return new TextInputBuilder()
         .setCustomId(customId)
         .setRequired(true)
@@ -27,8 +28,7 @@ export const createCoinTextInput = (customId: string, label: string, placeholder
         .setValue(value.toString())
         .setStyle(TextInputStyle.Short)
 }
-
-export const createGurubankModal = (customId: string, target: Player & { coins: Bank | null } | null): ModalBuilder => {
+const createGurubankModal = (customId: string, target: Player & { coins: Bank | null } | null): ModalBuilder => {
     let modal = new ModalBuilder();
 
     if (target && target.coins) {
@@ -72,10 +72,17 @@ export const createGurubankModal = (customId: string, target: Player & { coins: 
 @Discord()
 export class GurubankModal {
     player: Player & { coins: Bank | null } | null = null;
+    user: User | null = null;
 
     @ContextMenu({name: "Modifier la Gurubank", type: ApplicationCommandType.User})
     async handle(interaction: UserContextMenuCommandInteraction): Promise<void> {
+        if (interaction.targetUser.bot) {
+            await interaction.reply({content: "❌ Vous ne pouvez pas interagir avec un bot !", ephemeral: true})
+            return;
+        }
+
         this.player = await PlayerHelper.findUniquePlayerWithBank(interaction.targetUser.id);
+        this.user = interaction.targetUser;
 
         const modal = createGurubankModal("GurubankModal", this.player)
 
@@ -94,7 +101,13 @@ export class GurubankModal {
             user: User,
         interaction: CommandInteraction): Promise<void> {
         if (user) {
+            if (user.bot) {
+                await interaction.reply({content: "❌ Vous ne pouvez pas interagir avec un bot !", ephemeral: true})
+                return;
+            }
+
             this.player = await PlayerHelper.findUniquePlayerWithBank(user.id);
+            this.user = user;
 
             const modal = createGurubankModal("GurubankModal", this.player)
 
@@ -110,6 +123,8 @@ export class GurubankModal {
         );
 
         if (this.player && this.player.coins) {
+            const playerDiscordId = this.player.discordId
+
             await prisma.bank.update({
                 where: {
                     id: this.player.id
@@ -119,18 +134,23 @@ export class GurubankModal {
                     agonyCoin: +agonyCoins,
                     despairCoin: +despairCoins
                 }
-            }).then(async () => {
-                    await interaction.reply(
-                        `Pain Coins: ${painCoins}, Agony Coins: ${agonyCoins}, Despair Coins: ${despairCoins}`
-                    );
+            }).then(async (player) => {
+                this.player = await PlayerHelper.findUniquePlayerWithBank(playerDiscordId);
+
+                if (interaction.guild && this.player && this.player.coins && this.user) {
+                    const target = interaction.guild.members.cache.get(this.user.id);
+
+                    const embed = EmbedHelper.createGurubankEmbed(interaction, this.player, target)
+                    await interaction.reply({embeds: [embed], ephemeral: true})
 
                     this.player = null;
                     return;
                 }
-            ).catch((error) => {
+            }).catch(error => {
                 this.player = null;
                 logger.error(error)
             })
         }
     }
+
 }

@@ -2,11 +2,10 @@ version: "3"
 services:
   db:
     image: postgres:${POSTGRES_VERSION:-latest}
+    container_name: "gurubot-db"
     restart: always
     volumes:
       - gurubot-db:/var/lib/postgres/data:rw
-    expose:
-      - "${POSTGRES_PORT:-5432}"
     ports:
       - "${POSTGRES_PORT:-5432}:5432"
     healthcheck:
@@ -20,6 +19,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    container_name: "gurubot"
     restart: always
     depends_on:
       - db
@@ -28,3 +28,7 @@ services:
 
 volumes:
   gurubot-db:
+
+networks:
+  default:
+    name: gurubot-network
